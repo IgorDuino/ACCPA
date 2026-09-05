@@ -1,0 +1,42 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  Nat
+but got
+  fn (Nat) -> Nat
+when typechecking the expression
+  Nat::add (Nat::add (i) (succ (r)))
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  fn (Nat) -> Nat
+but got
+  fn (Nat) -> fn (Nat) -> Nat
+when typechecking the expression
+  fn (r : Nat)
+{
+  return Nat::add (Nat::add (i) (succ (r)))
+}
+
+-----
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  fn (Nat) -> fn (Nat) -> Nat
+but got
+  fn (Nat) -> fn (Nat) -> fn (Nat) -> Nat
+when typechecking the expression
+  fn (i : Nat)
+{
+  return fn (r : Nat)
+  {
+    return Nat::add (Nat::add (i) (succ (r)))
+  }
+}
+
+

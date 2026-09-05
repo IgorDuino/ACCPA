@@ -1,0 +1,6 @@
+language core;
+extend with #tuples;
+
+fn main(n : Nat) -> Nat {
+  return {succ(0), succ(succ(0))}.3
+}

@@ -1,0 +1,17 @@
+ERROR: Syntax error:
+ERROR:
+Illegal expression
+  let
+{
+  x = a, x = b
+}
+=
+{
+  x = 0
+}
+in a
+Perhaps, you would like to enable '#let-bindings' extension?
+Currently, the following extensions are enabled:
+'#structural-patterns' and '#records'
+
+

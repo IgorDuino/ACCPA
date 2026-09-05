@@ -1,0 +1,22 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  
+{
+  Nat, Nat
+}
+
+but got
+  
+{
+  Nat, Bool
+}
+
+when typechecking the expression
+  swap (
+{
+  0, x
+}
+)
+

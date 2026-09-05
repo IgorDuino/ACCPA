@@ -1,0 +1,18 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_TUPLE_INDEX_OUT_OF_BOUNDS]
+unexpected access to component number 2
+in a tuple
+  
+{
+  0
+}
+
+of length1
+of type
+  
+{
+  Nat
+}
+
+

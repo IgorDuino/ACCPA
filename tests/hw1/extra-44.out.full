@@ -1,0 +1,9 @@
+ERROR: Syntax error:
+ERROR:
+Illegal expression
+  Nat::pred (x)
+Perhaps, you would like to enable '#predecessor' extension?
+Currently, the following extensions are enabled:
+'#letrec-bindings'
+
+

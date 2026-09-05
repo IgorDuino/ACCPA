@@ -1,0 +1,3 @@
+language core;
+extend with #let-bindings, #type-ascriptions;
+fn main(n : Nat) -> Nat { return let x = n in x as Nat }

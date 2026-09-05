@@ -1,0 +1,26 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  Nat
+but got
+  <| CorrectLabel : Nat |>
+when typechecking the expression
+  <| WrongLabel = 0 |>
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_VARIANT_LABEL]
+unexpected label
+ WrongLabel
+for a variant type
+  <| CorrectLabel : Nat |>
+in variant expression
+  <| WrongLabel = 0 |>
+-----
+Type Error Tag: [ERROR_AMBIGUOUS_VARIANT_TYPE]
+type inference for variants is not supported (use type ascriptions or enable #structural-subtyping)
+

@@ -1,0 +1,32 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_PARAMETER]
+expected type
+  Nat
+but got
+  Bool
+for the parameter n
+in function
+  fn (n : Bool)
+{
+  return 0
+}
+
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  fn (Nat) -> Nat
+but got
+  fn (Bool) -> Nat
+when typechecking the expression
+  fn (n : Bool)
+{
+  return 0
+}
+
+

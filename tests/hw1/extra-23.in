@@ -1,0 +1,14 @@
+// by Matvey Korinenko
+language core;
+extend with #lists, #type-ascriptions, #structural-patterns;
+
+fn t(x : [Nat]) -> Nat {
+  return match x {
+    [] => 0
+    | cons(z, []) => 0
+  }
+}
+
+fn main(x : Nat) -> Nat {
+  return t([])
+}

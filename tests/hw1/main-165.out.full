@@ -1,0 +1,13 @@
+ERROR: Syntax error:
+ERROR:
+Unsupported Syntax Error: ERROR_DUPLICATE_RECORD_FIELDS
+duplicate record fields
+  x
+in record
+  
+{
+  x = 0, x = 1
+}
+
+
+

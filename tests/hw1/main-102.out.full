@@ -1,0 +1,10 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_NOT_A_LIST]
+expected a list type but got
+  Nat
+for the expression
+  arg
+in the expression
+  List::isempty (arg)
+

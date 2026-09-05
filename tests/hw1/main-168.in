@@ -1,0 +1,6 @@
+language core;
+extend with #sum-types, #type-ascriptions;
+
+fn main(n : Nat) -> Nat {
+  return inl(0) as Nat
+}

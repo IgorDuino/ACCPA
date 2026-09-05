@@ -1,0 +1,4 @@
+language core;
+extend with #sum-types, #type-ascriptions;
+fn unpack(s : Nat + Bool) -> Nat { return match s { inl(x) => x | inr(b) => 0 } }
+fn main(n : Nat) -> Nat { return unpack(inl(n) as Nat + Bool) }

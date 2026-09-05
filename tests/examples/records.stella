@@ -1,0 +1,4 @@
+language core;
+extend with #records;
+fn field(r : {value : Nat, flag : Bool}) -> Nat { return r.value }
+fn main(n : Nat) -> Nat { return field({value = n, flag = true}) }

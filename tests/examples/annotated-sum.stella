@@ -1,0 +1,3 @@
+language core;
+extend with #let-bindings, #sum-types, #type-ascriptions;
+fn main(n : Nat) -> Nat { return let s = inl(n) as Nat + Bool in n }

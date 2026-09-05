@@ -1,0 +1,10 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  fn (fn (Nat) -> Nat) -> fn (Nat) -> Nat
+but got
+  fn () -> fn (fn (Nat) -> Nat) -> fn (Nat) -> Nat
+when typechecking the expression
+  Nat_to_Nat_to_Nat_to_Nat::delay (apply)
+

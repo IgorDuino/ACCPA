@@ -1,0 +1,43 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_MISSING_RECORD_FIELDS]
+missing fields
+  snd
+for an expected record type
+  
+{
+  fst : Nat, snd : Bool
+}
+
+in the record
+  
+{
+  fst = 0
+}
+
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  
+{
+  fst : Nat, snd : Bool
+}
+
+but got
+  
+{
+  fst : Nat
+}
+
+when typechecking the expression
+  
+{
+  fst = 0
+}
+
+

@@ -1,0 +1,6 @@
+language core;
+extend with #letrec-bindings;
+
+fn main(n : Nat) -> Nat {
+  return letrec f = fn(x : Nat) { return if Nat::iszero(x) then 0 else f(Nat::pred(x)) } in f(n)
+}

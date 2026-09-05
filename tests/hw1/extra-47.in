@@ -1,0 +1,6 @@
+language core;
+extend with #structural-patterns, #records;
+
+fn main(n : Nat) -> Nat {
+  return let {x = a, x = b} = {x = 0} in a
+}

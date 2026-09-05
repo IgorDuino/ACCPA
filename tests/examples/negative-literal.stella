@@ -1,0 +1,2 @@
+language core;
+fn main(n : Nat) -> Nat { return -1 }

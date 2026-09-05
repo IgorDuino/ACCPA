@@ -1,0 +1,6 @@
+language core;
+extend with #variants;
+
+fn main(n : Nat) -> <| Label1 : Nat, Label2 : Nat |> {
+  return <| Label1 = 0 |>
+}

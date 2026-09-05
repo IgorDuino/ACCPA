@@ -1,0 +1,10 @@
+language core;
+extend with #records, #type-ascriptions, #natural-literals;
+
+fn helper(v : {label1 : Nat, label2 : Nat}) -> {label1 : Nat} {
+  return v as {label1 : Nat}
+}
+
+fn main(n : Nat) -> {label1 : Nat} {
+  return helper({label1 = 0, label2 = 1} as {label1 : Nat, label2 : Nat})
+}

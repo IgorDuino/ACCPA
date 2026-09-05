@@ -1,0 +1,27 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  Nat
+but got
+  Bool
+when typechecking the expression
+  Nat::iszero (succ (a))
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  fn (Nat) -> Nat
+but got
+  fn (Nat) -> Bool
+when typechecking the expression
+  fn (a : Nat)
+{
+  return Nat::iszero (succ (a))
+}
+
+

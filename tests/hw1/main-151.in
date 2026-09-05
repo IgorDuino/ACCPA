@@ -1,0 +1,8 @@
+language core;
+
+extend with #tuples,
+            #natural-literals;
+
+fn main(n : Nat) -> {Nat, Bool} {
+  return {1, true}
+}

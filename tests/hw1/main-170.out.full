@@ -1,0 +1,45 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_RECORD_FIELDS]
+unexpected fields
+  y
+for an expected record of type
+  
+{
+  x : Nat
+}
+
+in the record
+  
+{
+  x = 0, y = 1
+}
+
+
+Perhaps, you would like to enable #structural-subtyping extension?
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  
+{
+  x : Nat
+}
+
+but got
+  
+{
+  x : Nat, y : Nat
+}
+
+when typechecking the expression
+  
+{
+  x = 0, y = 1
+}
+
+

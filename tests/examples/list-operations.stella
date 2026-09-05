@@ -1,0 +1,3 @@
+language core;
+extend with #lists, #type-ascriptions;
+fn main(n : Nat) -> Nat { return if List::isempty([] as [Nat]) then List::head(cons(n, [] as [Nat])) else List::head(List::tail([n, n])) }

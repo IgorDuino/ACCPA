@@ -1,0 +1,13 @@
+language core;
+extend with #nested-function-declarations;
+
+fn outer(n : Nat) -> Nat {
+  fn inner(x : Nat) -> Nat {
+    return succ(x)
+  }
+  return inner(n)
+}
+
+fn main(n : Nat) -> Nat {
+  return outer(n)
+}

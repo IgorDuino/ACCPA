@@ -1,0 +1,10 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_ILLEGAL_EMPTY_MATCHING]
+illegal empty matching
+in expression
+  match bf
+{
+}
+
+

@@ -1,0 +1,4 @@
+language core;
+extend with #variants, #type-ascriptions;
+fn unpack(v : <| number : Nat, flag : Bool |>) -> Nat { return match v { <| number = n |> => n | <| flag = b |> => 0 } }
+fn main(n : Nat) -> Nat { return unpack(<| number = n |> as <| number : Nat, flag : Bool |>) }

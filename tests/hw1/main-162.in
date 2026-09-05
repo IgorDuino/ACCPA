@@ -1,0 +1,6 @@
+language core;
+extend with #variants, #type-ascriptions;
+
+fn main(n : Nat) -> Nat {
+  return <| WrongLabel = 0 |> as <| CorrectLabel : Nat |>
+}

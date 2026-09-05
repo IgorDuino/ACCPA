@@ -1,0 +1,6 @@
+language core;
+extend with #variants, #nullary-variant-labels, #type-ascriptions;
+
+fn main(n : Nat) -> <| Label1, Label2 : Nat |> {
+  return <| Label1 = 0 |> as <| Label1, Label2 : Nat |>
+}

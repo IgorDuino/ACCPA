@@ -1,0 +1,10 @@
+language core;
+extend with #multiparameter-functions;
+
+fn add(x : Nat, y : Nat) -> Nat {
+  return succ(x)
+}
+
+fn main(n : Nat) -> Nat {
+  return add(n)
+}

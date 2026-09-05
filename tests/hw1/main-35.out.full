@@ -1,0 +1,27 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  fn (Nat) -> Nat
+but got
+  Nat
+when typechecking the expression
+  succ (r)
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  fn (Nat) -> fn (Nat) -> Nat
+but got
+  fn (Nat) -> Nat
+when typechecking the expression
+  fn (r : Nat)
+{
+  return succ (r)
+}
+
+

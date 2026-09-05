@@ -1,0 +1,6 @@
+language core;
+extend with #tuples, #natural-literals;
+
+fn main(n : Nat) -> Nat {
+  return {0, 1}.3
+}

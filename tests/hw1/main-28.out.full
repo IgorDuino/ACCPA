@@ -1,0 +1,27 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  Bool
+but got
+  Nat
+when typechecking the expression
+  g (if iszero (n) then false else true)
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  fn (Nat) -> Bool
+but got
+  fn (Nat) -> Nat
+when typechecking the expression
+  fn (n : Nat)
+{
+  return g (if iszero (n) then false else true)
+}
+
+

@@ -1,0 +1,8 @@
+language core;
+extend with #variants, #nullary-variant-labels, #type-ascriptions;
+
+fn main(n : Nat) -> Nat {
+  return match <| Label1 |> as <| Label1 |> {
+    <| Label1 = x |> => x
+  }
+}

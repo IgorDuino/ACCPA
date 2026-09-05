@@ -1,0 +1,13 @@
+ERROR: Syntax error:
+ERROR:
+Unsupported Syntax Error: ERROR_DUPLICATE_RECORD_TYPE_FIELDS
+duplicate record fields
+  x
+in record type
+  
+{
+  x : Nat, x : Nat
+}
+
+
+

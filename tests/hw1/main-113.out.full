@@ -1,0 +1,19 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_NOT_A_TUPLE]
+expected an expression of tuple type
+but got expression
+  rotate3
+of type
+  fn (
+{
+  Nat, Nat, Nat
+}
+) ->
+{
+  Nat, Nat, Nat
+}
+
+in expression
+  rotate3 . 3
+

@@ -1,0 +1,6 @@
+language core;
+extend with #variants, #type-ascriptions;
+
+fn main(n : Nat) -> Nat {
+  return <| label = 0 |> as Nat
+}

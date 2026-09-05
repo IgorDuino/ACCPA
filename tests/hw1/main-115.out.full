@@ -1,0 +1,33 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_RECORD]
+expected an expression of a non-record type
+  Nat
+but got a record
+  
+{
+  a = 0, b = false
+}
+
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  Nat
+but got
+  
+{
+  a : Nat, b : Bool
+}
+
+when typechecking the expression
+  
+{
+  a = 0, b = false
+}
+
+

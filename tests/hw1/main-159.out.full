@@ -1,0 +1,5 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_MISSING_MAIN]
+main function is not found in the program
+

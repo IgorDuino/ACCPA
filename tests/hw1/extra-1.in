@@ -1,0 +1,9 @@
+language core;
+extend with #structural-patterns, #unit-type, #lists;
+
+fn main(input : Unit) -> Bool {
+  return
+    match input {
+      [] => true
+   }
+}

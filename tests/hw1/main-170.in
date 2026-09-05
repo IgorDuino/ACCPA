@@ -1,0 +1,6 @@
+language core;
+extend with #records, #natural-literals;
+
+fn main(n : Nat) -> {x : Nat} {
+  return {x = 0, y = 1}
+}

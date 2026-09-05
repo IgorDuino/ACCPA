@@ -1,0 +1,18 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  
+{
+  label1 : Nat
+}
+
+but got
+  
+{
+  label1 : Nat, label2 : Nat
+}
+
+when typechecking the expression
+  v
+

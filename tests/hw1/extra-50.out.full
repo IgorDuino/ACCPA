@@ -1,0 +1,9 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_UNEXPECTED_NON_NULLARY_VARIANT_PATTERN]
+expected a pattern for nullary label Label1
+for a variant of type
+  <| Label1 |>
+in pattern
+  <| Label1 = x |>
+

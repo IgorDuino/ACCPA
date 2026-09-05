@@ -1,0 +1,16 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_VARIANT]
+expected an expression of a non-variant type
+  Nat
+but got a variant
+  <| label = 0 |>
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_AMBIGUOUS_VARIANT_TYPE]
+type inference for variants is not supported (use type ascriptions or enable #structural-subtyping)
+

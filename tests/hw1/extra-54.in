@@ -1,0 +1,6 @@
+language core;
+extend with #integers;
+
+fn main(n : Nat) -> Nat {
+  return -1
+}
