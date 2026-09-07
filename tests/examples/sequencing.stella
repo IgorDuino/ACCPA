@@ -1,0 +1,6 @@
+language core;
+extend with #unit-type, #sequencing;
+
+fn main(n : Nat) -> Nat {
+  return unit; n
+}

@@ -141,6 +141,9 @@ def infer(node, context) -> Type:
         return NAT
     if isinstance(node, P.ConstUnitContext):
         return UNIT
+    if isinstance(node, P.SequenceContext):
+        check(node.expr1, UNIT, context)
+        return infer(node.expr2, context)
     if isinstance(node, (P.SuccContext, P.PredContext, P.IsZeroContext)):
         check(node.n, NAT, context)
         return BOOL if isinstance(node, P.IsZeroContext) else NAT
@@ -245,6 +248,10 @@ def infer(node, context) -> Type:
 
 def check(node, expected: Type, context) -> None:
     node = unwrap(node)
+    if isinstance(node, P.SequenceContext):
+        check(node.expr1, UNIT, context)
+        check(node.expr2, expected, context)
+        return
     if isinstance(node, P.AbstractionContext):
         if not isinstance(expected, FunType):
             fail("ERROR_UNEXPECTED_LAMBDA", f"Expected {format_type(expected)}, found a lambda", node)
