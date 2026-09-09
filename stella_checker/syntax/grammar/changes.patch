@@ -27,3 +27,8 @@
      | 'Unit'                                                    # TypeUnit
      | 'Top'                                                     # TypeTop
      | '&' type_=stellatype                                      # TypeRef
+--- upstream/stellaLexer.g4
++++ stella_checker/syntax/grammar/stellaLexer.g4
+@@ -99,1 +99,1 @@
+-MemoryAddress: '<0x' (DIGIT|[a-f])+ '>';
++MemoryAddress: '<0x' (DIGIT|[a-fA-F])+ '>';

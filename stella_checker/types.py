@@ -36,11 +36,16 @@ class ListType:
 
 
 @dataclass(frozen=True)
+class RefType:
+    element: Type
+
+
+@dataclass(frozen=True)
 class VariantType:
     fields: dict[str, Type]
 
 
-Type = BaseType | FunType | TupleType | RecordType | SumType | ListType | VariantType
+Type = BaseType | FunType | TupleType | RecordType | SumType | ListType | RefType | VariantType
 NAT = BaseType("Nat")
 BOOL = BaseType("Bool")
 UNIT = BaseType("Unit")
@@ -61,6 +66,8 @@ def format_type(type_: Type) -> str:
         return f"({format_type(type_.left)} + {format_type(type_.right)})"
     if isinstance(type_, ListType):
         return f"[{format_type(type_.element)}]"
+    if isinstance(type_, RefType):
+        return f"&({format_type(type_.element)})"
     if isinstance(type_, VariantType):
         fields = (f"{name}: {format_type(t)}" for name, t in type_.fields.items())
         return "<| " + ", ".join(fields) + " |>"

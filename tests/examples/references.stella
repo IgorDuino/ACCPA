@@ -1,0 +1,6 @@
+language core;
+extend with #references, #unit-type, #sequencing, #let-bindings;
+
+fn main(n : Nat) -> Nat {
+  return let r = new(n) in (r := succ(*r); *r)
+}

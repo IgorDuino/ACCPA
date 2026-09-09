@@ -1,7 +1,7 @@
 from .errors import TypeCheckError, UnsupportedFeature
 from .syntax.generated.stellaParser import stellaParser as P
 from .types import (
-    BOOL, NAT, UNIT, FunType, ListType, RecordType, SumType, TupleType,
+    BOOL, NAT, UNIT, FunType, ListType, RecordType, RefType, SumType, TupleType,
     Type, VariantType, format_type,
 )
 
@@ -41,6 +41,8 @@ def read_type(node) -> Type:
         return SumType(read_type(node.left), read_type(node.right))
     if isinstance(node, P.TypeListContext):
         return ListType(read_type(node.types[0]))
+    if isinstance(node, P.TypeRefContext):
+        return RefType(read_type(node.type_))
     if isinstance(node, (P.TypeRecordContext, P.TypeVariantContext)):
         is_record = isinstance(node, P.TypeRecordContext)
         fields = {}
@@ -144,6 +146,16 @@ def infer(node, context) -> Type:
     if isinstance(node, P.SequenceContext):
         check(node.expr1, UNIT, context)
         return infer(node.expr2, context)
+    if isinstance(node, P.RefContext):
+        return RefType(infer(node.expr_, context))
+    if isinstance(node, P.ConstMemoryContext):
+        fail("ERROR_AMBIGUOUS_REFERENCE_TYPE", "A memory address needs an expected reference type", node)
+    if isinstance(node, P.DerefContext):
+        return reference_type(node.expr_, context).element
+    if isinstance(node, P.AssignContext):
+        target = reference_type(node.lhs, context)
+        check(node.rhs, target.element, context)
+        return UNIT
     if isinstance(node, (P.SuccContext, P.PredContext, P.IsZeroContext)):
         check(node.n, NAT, context)
         return BOOL if isinstance(node, P.IsZeroContext) else NAT
@@ -252,6 +264,29 @@ def check(node, expected: Type, context) -> None:
         check(node.expr1, UNIT, context)
         check(node.expr2, expected, context)
         return
+    if isinstance(node, P.RefContext):
+        if not isinstance(expected, RefType):
+            fail("ERROR_UNEXPECTED_REFERENCE", f"Expected {format_type(expected)}, found a reference", node)
+        check(node.expr_, expected.element, context)
+        return
+    if isinstance(node, P.ConstMemoryContext):
+        if not isinstance(expected, RefType):
+            fail("ERROR_UNEXPECTED_MEMORY_ADDRESS", f"Expected {format_type(expected)}, found a memory address", node)
+        return
+    if isinstance(node, P.DerefContext):
+        try:
+            actual = reference_type(node.expr_, context)
+        except TypeCheckError as error:
+            if error.code not in {
+                "ERROR_AMBIGUOUS_REFERENCE_TYPE", "ERROR_AMBIGUOUS_LIST_TYPE",
+                "ERROR_AMBIGUOUS_SUM_TYPE", "ERROR_AMBIGUOUS_VARIANT_TYPE",
+                "ERROR_AMBIGUOUS_PANIC_TYPE", "ERROR_AMBIGUOUS_THROW_TYPE",
+            }:
+                raise
+            check(node.expr_, RefType(expected), context)
+            return
+        require_equal(expected, actual.element, node)
+        return
     if isinstance(node, P.AbstractionContext):
         if not isinstance(expected, FunType):
             fail("ERROR_UNEXPECTED_LAMBDA", f"Expected {format_type(expected)}, found a lambda", node)
@@ -336,6 +371,13 @@ def check(node, expected: Type, context) -> None:
         check(node.list_, ListType(expected), context)
         return
     require_equal(expected, infer(node, context), node)
+
+
+def reference_type(node, context):
+    type_ = infer(node, context)
+    if not isinstance(type_, RefType):
+        fail("ERROR_NOT_A_REFERENCE", f"Expected a reference, found {format_type(type_)}", node)
+    return type_
 
 
 def record_bindings(node):
