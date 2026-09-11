@@ -143,6 +143,12 @@ def infer(node, context) -> Type:
         return NAT
     if isinstance(node, P.ConstUnitContext):
         return UNIT
+    if isinstance(node, P.PanicContext):
+        fail("ERROR_AMBIGUOUS_PANIC_TYPE", "Panic needs an expected result type", node)
+    if isinstance(node, P.TryWithContext):
+        result = infer(node.tryExpr, context)
+        check(node.fallbackExpr, result, context)
+        return result
     if isinstance(node, P.SequenceContext):
         check(node.expr1, UNIT, context)
         return infer(node.expr2, context)
@@ -260,6 +266,12 @@ def infer(node, context) -> Type:
 
 def check(node, expected: Type, context) -> None:
     node = unwrap(node)
+    if isinstance(node, P.PanicContext):
+        return
+    if isinstance(node, P.TryWithContext):
+        check(node.tryExpr, expected, context)
+        check(node.fallbackExpr, expected, context)
+        return
     if isinstance(node, P.SequenceContext):
         check(node.expr1, UNIT, context)
         check(node.expr2, expected, context)

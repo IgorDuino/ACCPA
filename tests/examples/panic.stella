@@ -1,0 +1,6 @@
+language core;
+extend with #panic;
+
+fn main(n : Nat) -> Nat {
+  return if Nat::iszero(n) then panic! else Nat::pred(n)
+}
