@@ -6,6 +6,15 @@ from .types import (
 )
 
 
+class Context(dict):
+    def __init__(self, variables=(), exception_type=None):
+        super().__init__(variables)
+        self.exception_type = exception_type
+
+    def copy(self):
+        return Context(self, self.exception_type)
+
+
 def fail(code, message, node):
     raise TypeCheckError(code, message, node)
 
@@ -56,14 +65,14 @@ def read_type(node) -> Type:
                 raise UnsupportedFeature("Variant labels without data are optional, not implemented")
             fields[name] = read_type(field.type_)
         return RecordType(fields) if is_record else VariantType(fields)
-    raise UnsupportedFeature(f"Type {node.getText()} is outside Stage 1")
+    raise UnsupportedFeature(f"Type {node.getText()} is not supported")
 
 
 def function_signature(decl):
     if decl.returnType is None:
         raise UnsupportedFeature("Function result annotations are required in this checker")
     if decl.throwTypes:
-        raise UnsupportedFeature("Exception declarations belong to Stage 2")
+        raise UnsupportedFeature("Function throws annotations are not supported")
     params = tuple(read_type(p.paramType) for p in decl.paramDecls)
     return FunType(params, read_type(decl.returnType))
 
@@ -77,10 +86,17 @@ def check_main(context, node):
         fail("ERROR_INCORRECT_ARITY_OF_MAIN", "main must have exactly one parameter", node)
 
 
-def collect_functions(declarations, context):
+def collect_functions(declarations, context, top_level=False):
     signatures = []
     names = set()
     for decl in declarations:
+        if isinstance(decl, P.DeclExceptionTypeContext):
+            if not top_level:
+                fail("ERROR_ILLEGAL_LOCAL_EXCEPTION_TYPE", "Exception type must be declared at top level", decl)
+            if context.exception_type is not None:
+                fail("ERROR_DUPLICATE_EXCEPTION_TYPE", "Exception type is already declared", decl)
+            context.exception_type = read_type(decl.exceptionType)
+            continue
         if not isinstance(decl, P.DeclFunContext):
             raise UnsupportedFeature("Only ordinary function declarations are supported")
         name = decl.name.text
@@ -93,7 +109,7 @@ def collect_functions(declarations, context):
             error.function = name
             raise
         context[name] = signature
-        signatures.append(signature)
+        signatures.append((decl, signature))
     return signatures
 
 
@@ -101,21 +117,27 @@ def check_function(decl, signature, context):
     local = context.copy()
     for param, type_ in zip(decl.paramDecls, signature.parameters):
         local[param.name.text] = type_
-    nested_types = collect_functions(decl.localDecls, local)
-    for nested, nested_type in zip(decl.localDecls, nested_types):
-        check_function(nested, nested_type, local)
     try:
+        for nested, nested_type in collect_functions(decl.localDecls, local):
+            check_function(nested, nested_type, local)
         check(decl.returnExpr, signature.result, local)
     except TypeCheckError as error:
-        error.function = decl.name.text
+        if error.function is None:
+            error.function = decl.name.text
         raise
 
 
 def check_program(program: P.ProgramContext) -> None:
-    context = {}
-    signatures = collect_functions(program.decls, context)
+    unsupported = {"#structural-subtyping", "#ambiguous-type-as-bottom",
+                   "#type-reconstruction", "#universal-types"}
+    for extension in program.extensions:
+        for name in extension.extensionNames:
+            if name.text in unsupported:
+                raise UnsupportedFeature(f"Extension {name.text} is not supported")
+    context = Context()
+    functions = collect_functions(program.decls, context, top_level=True)
     check_main(context, program)
-    for decl, signature in zip(program.decls, signatures):
+    for decl, signature in functions:
         check_function(decl, signature, context)
 
 
@@ -145,9 +167,16 @@ def infer(node, context) -> Type:
         return UNIT
     if isinstance(node, P.PanicContext):
         fail("ERROR_AMBIGUOUS_PANIC_TYPE", "Panic needs an expected result type", node)
+    if isinstance(node, P.ThrowContext):
+        check(node.expr_, exception_type(context, node), context)
+        fail("ERROR_AMBIGUOUS_THROW_TYPE", "Throw needs an expected result type", node)
     if isinstance(node, P.TryWithContext):
         result = infer(node.tryExpr, context)
         check(node.fallbackExpr, result, context)
+        return result
+    if isinstance(node, P.TryCatchContext):
+        result = infer(node.tryExpr, context)
+        check(node.fallbackExpr, result, catch_context(node, context))
         return result
     if isinstance(node, P.SequenceContext):
         check(node.expr1, UNIT, context)
@@ -261,16 +290,23 @@ def infer(node, context) -> Type:
         return BOOL if isinstance(node, P.IsEmptyContext) else type_
     if isinstance(node, P.MatchContext):
         return match_type(node, context)
-    raise UnsupportedFeature(f"Expression {type(node).__name__} is outside Stage 1")
+    raise UnsupportedFeature(f"Expression {type(node).__name__} is not supported")
 
 
 def check(node, expected: Type, context) -> None:
     node = unwrap(node)
     if isinstance(node, P.PanicContext):
         return
+    if isinstance(node, P.ThrowContext):
+        check(node.expr_, exception_type(context, node), context)
+        return
     if isinstance(node, P.TryWithContext):
         check(node.tryExpr, expected, context)
         check(node.fallbackExpr, expected, context)
+        return
+    if isinstance(node, P.TryCatchContext):
+        check(node.tryExpr, expected, context)
+        check(node.fallbackExpr, expected, catch_context(node, context))
         return
     if isinstance(node, P.SequenceContext):
         check(node.expr1, UNIT, context)
@@ -287,17 +323,17 @@ def check(node, expected: Type, context) -> None:
         return
     if isinstance(node, P.DerefContext):
         try:
-            actual = reference_type(node.expr_, context)
-        except TypeCheckError as error:
-            if error.code not in {
-                "ERROR_AMBIGUOUS_REFERENCE_TYPE", "ERROR_AMBIGUOUS_LIST_TYPE",
-                "ERROR_AMBIGUOUS_SUM_TYPE", "ERROR_AMBIGUOUS_VARIANT_TYPE",
-                "ERROR_AMBIGUOUS_PANIC_TYPE", "ERROR_AMBIGUOUS_THROW_TYPE",
-            }:
-                raise
             check(node.expr_, RefType(expected), context)
-            return
-        require_equal(expected, actual.element, node)
+        except TypeCheckError as error:
+            if error.code != "ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION":
+                raise
+            try:
+                actual = infer(node.expr_, context)
+            except (TypeCheckError, UnsupportedFeature):
+                raise error
+            if not isinstance(actual, RefType):
+                fail("ERROR_NOT_A_REFERENCE", f"Expected a reference, found {format_type(actual)}", node.expr_)
+            raise
         return
     if isinstance(node, P.AbstractionContext):
         if not isinstance(expected, FunType):
@@ -392,6 +428,19 @@ def reference_type(node, context):
     return type_
 
 
+def exception_type(context, node):
+    if context.exception_type is None:
+        fail("ERROR_EXCEPTION_TYPE_NOT_DECLARED", "Declare an exception type", node)
+    return context.exception_type
+
+
+def catch_context(node, context):
+    type_ = exception_type(context, node)
+    local = context.copy()
+    local.update(pattern_bindings(node.pat, type_, allow_literals=True))
+    return local
+
+
 def record_bindings(node):
     bindings = {}
     for binding in node.bindings:
@@ -419,18 +468,27 @@ def unwrap_pattern(pattern):
     return pattern
 
 
-def pattern_bindings(pattern, type_):
+def pattern_bindings(pattern, type_, allow_literals=False):
     pattern = unwrap_pattern(pattern)
     if isinstance(pattern, P.PatternVarContext):
         return {pattern.name.text: type_}
+    if allow_literals:
+        if isinstance(pattern, (P.PatternTrueContext, P.PatternFalseContext)) and type_ == BOOL:
+            return {}
+        if isinstance(pattern, P.PatternUnitContext) and type_ == UNIT:
+            return {}
+        if isinstance(pattern, P.PatternIntContext) and type_ == NAT:
+            return {}
+        if isinstance(pattern, P.PatternSuccContext) and type_ == NAT:
+            return pattern_bindings(pattern.pattern_, NAT, allow_literals=True)
     if isinstance(pattern, (P.PatternInlContext, P.PatternInrContext)):
         if isinstance(type_, SumType):
             payload = type_.left if isinstance(pattern, P.PatternInlContext) else type_.right
-            return pattern_bindings(pattern.pattern_, payload)
+            return pattern_bindings(pattern.pattern_, payload, allow_literals)
     if isinstance(pattern, P.PatternVariantContext) and isinstance(type_, VariantType):
         name = pattern.label.text
         if name in type_.fields and pattern.pattern_ is not None:
-            return pattern_bindings(pattern.pattern_, type_.fields[name])
+            return pattern_bindings(pattern.pattern_, type_.fields[name], allow_literals)
     fail("ERROR_UNEXPECTED_PATTERN_FOR_TYPE",
          f"Pattern does not match type {format_type(type_)}", pattern)
 
