@@ -1,10 +1,10 @@
-from stage2_support import ProgramTests, program
+from helpers import CheckerTestCase, program
 
 
 EXTENSIONS = "#panic, #sequencing, #exceptions"
 
 
-class PanicTests(ProgramTests):
+class PanicTests(CheckerTestCase):
     def test_valid(self):
         cases = [
             ("expected_nat", "panic!", "Nat"),

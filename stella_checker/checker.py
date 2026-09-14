@@ -31,7 +31,8 @@ class Context(dict[str, Type]):
 
     def copy(self) -> Context:
         return Context(self, self.exception_type)
-
+        # копирование неглубокое. возможно при переприсвоение в локальном контексте чегото внутри ссылочного типа можно сломаться
+        
 
 def fail(code: str, message: str, node: ParserRuleContext) -> NoReturn:
     raise TypeCheckError(code, message, node)

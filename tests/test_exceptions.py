@@ -1,4 +1,4 @@
-from stage2_support import ProgramTests, program
+from helpers import CheckerTestCase, program
 
 
 EXTENSIONS = "#exceptions, #sum-types, #variants, #tuples"
@@ -9,7 +9,7 @@ def exception_program(body, result="Nat", parameter="n : Nat", exception_type="N
     return program(body, result, parameter, exception + declarations, EXTENSIONS)
 
 
-class ExceptionTests(ProgramTests):
+class ExceptionTests(CheckerTestCase):
     def test_valid(self):
         cases = [
             ("payload_and_result_differ", "try { throw(n) } with { true }", "Bool", "n : Nat", "Nat", ""),

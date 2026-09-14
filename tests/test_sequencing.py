@@ -1,7 +1,7 @@
-from stage2_support import ProgramTests, program
+from helpers import CheckerTestCase, program
 
 
-class SequencingTests(ProgramTests):
+class SequencingTests(CheckerTestCase):
     def test_valid(self):
         cases = [
             ("two_expressions", "unit; n", "Nat"),

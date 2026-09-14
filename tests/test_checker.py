@@ -1,7 +1,4 @@
-from pathlib import Path
 import re
-import subprocess
-import sys
 import unittest
 
 from stella_checker.checker import check_main, check_program
@@ -9,11 +6,7 @@ from stella_checker.errors import TypeCheckError
 from stella_checker.syntax.parsing import parse_program
 from stella_checker.types import NAT
 
-ROOT = Path(__file__).resolve().parents[1]
-
-
-def program(body, result="Nat", parameter="n : Nat", declarations=""):
-    return f"language core;\n{declarations}\nfn main({parameter}) -> {result} {{ return {body} }}"
+from helpers import ROOT, CheckerTestCase, program, run_cli
 
 
 VALID = [
@@ -160,18 +153,16 @@ INVALID = [
 ]
 
 
-class CheckerTests(unittest.TestCase):
+class CheckerTests(CheckerTestCase):
     def test_valid_programs(self):
         for name, source in VALID:
             with self.subTest(case=name):
-                check_program(parse_program(source))
+                self.assert_valid(source)
 
     def test_first_error_for_invalid_programs(self):
         for name, source, code in INVALID:
             with self.subTest(case=name):
-                with self.assertRaises(TypeCheckError) as raised:
-                    check_program(parse_program(source))
-                self.assertEqual(raised.exception.code, code)
+                self.assert_error(source, code)
 
     def test_main_type_guard(self):
 
@@ -185,21 +176,19 @@ class CheckerTests(unittest.TestCase):
         for path in sorted((ROOT / "tests" / "examples").glob("*.stella")):
             if path.name not in negative:
                 with self.subTest(file=path.name):
-                    check_program(parse_program(path.read_text()))
+                    self.assert_valid(path.read_text())
 
     def test_cli_first_error_and_exit_code(self):
         for name, source, code in INVALID:
             with self.subTest(case=name):
-                result = subprocess.run([sys.executable, str(ROOT / "main.py")],
-                                        input=source, capture_output=True, text=True, timeout=10)
+                result = run_cli(source)
                 self.assertEqual(result.returncode, 1, result.stderr)
                 self.assertEqual(result.stdout, "")
                 self.assertEqual(re.findall(r"ERROR_[A-Z_]+", result.stderr), [code])
                 self.assertNotIn("Traceback", result.stderr)
 
     def test_cli_valid_stdin(self):
-        result = subprocess.run([sys.executable, str(ROOT / "main.py")],
-                                input=program("succ(n)"), text=True, capture_output=True, timeout=10)
+        result = run_cli(program("succ(n)"))
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout + result.stderr, "")
 

@@ -1,10 +1,10 @@
-from stage2_support import ProgramTests, program
+from helpers import CheckerTestCase, program
 
 
 EXTENSIONS = "#references, #sequencing"
 
 
-class ReferenceTests(ProgramTests):
+class ReferenceTests(CheckerTestCase):
     def test_valid(self):
         cases = [
             ("allocation", "new(n)", "&Nat", "n : Nat"),
