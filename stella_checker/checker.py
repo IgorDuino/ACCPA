@@ -1,25 +1,43 @@
+from __future__ import annotations
+
+from collections.abc import Iterable, Mapping
+from typing import NoReturn, cast
+
+from antlr4 import ParserRuleContext
+
 from .errors import TypeCheckError, UnsupportedFeature
 from .syntax.generated.stellaParser import stellaParser as P
 from .types import (
-    BOOL, NAT, UNIT, FunType, ListType, RecordType, RefType, SumType, TupleType,
-    Type, VariantType, format_type,
+    BOOL,
+    NAT,
+    UNIT,
+    FunType,
+    ListType,
+    RecordType,
+    RefType,
+    SumType,
+    TupleType,
+    Type,
+    VariantType,
+    format_type,
 )
 
 
-class Context(dict):
-    def __init__(self, variables=(), exception_type=None):
+class Context(dict[str, Type]):
+    def __init__(self, variables: Mapping[str, Type] | Iterable[tuple[str, Type]] = (),
+                 exception_type: Type | None = None) -> None:
         super().__init__(variables)
-        self.exception_type = exception_type
+        self.exception_type: Type | None = exception_type
 
-    def copy(self):
+    def copy(self) -> Context:
         return Context(self, self.exception_type)
 
 
-def fail(code, message, node):
+def fail(code: str, message: str, node: ParserRuleContext) -> NoReturn:
     raise TypeCheckError(code, message, node)
 
 
-def require_equal(expected, actual, node):
+def require_equal(expected: Type, actual: Type, node: ParserRuleContext) -> None:
 
     if expected == actual:
         return
@@ -33,7 +51,7 @@ def require_equal(expected, actual, node):
          f"Expected {format_type(expected)}, found {format_type(actual)}", node)
 
 
-def read_type(node) -> Type:
+def read_type(node: P.StellatypeContext) -> Type:
     if isinstance(node, P.TypeParensContext):
         return read_type(node.type_)
     if isinstance(node, P.TypeNatContext):
@@ -54,7 +72,8 @@ def read_type(node) -> Type:
         return RefType(read_type(node.type_))
     if isinstance(node, (P.TypeRecordContext, P.TypeVariantContext)):
         is_record = isinstance(node, P.TypeRecordContext)
-        fields = {}
+        fields: dict[str, Type] = {}
+        field: P.RecordFieldTypeContext | P.VariantFieldTypeContext
         for field in node.fieldTypes:
             name = field.label.text
             if name in fields:
@@ -68,7 +87,7 @@ def read_type(node) -> Type:
     raise UnsupportedFeature(f"Type {node.getText()} is not supported")
 
 
-def function_signature(decl):
+def function_signature(decl: P.DeclFunContext) -> FunType:
     if decl.returnType is None:
         raise UnsupportedFeature("Function result annotations are required in this checker")
     if decl.throwTypes:
@@ -77,18 +96,20 @@ def function_signature(decl):
     return FunType(params, read_type(decl.returnType))
 
 
-def check_main(context, node):
+def check_main(context: Context, node: P.ProgramContext) -> None:
     if "main" not in context:
         fail("ERROR_MISSING_MAIN", "No top-level main function", node)
-    if not isinstance(context["main"], FunType):
+    main_type = context["main"]
+    if not isinstance(main_type, FunType):
         fail("ERROR_INCORRECT_TYPE_OF_MAIN", "main must have a function type", node)
-    if len(context["main"].parameters) != 1:
+    if len(main_type.parameters) != 1:
         fail("ERROR_INCORRECT_ARITY_OF_MAIN", "main must have exactly one parameter", node)
 
 
-def collect_functions(declarations, context, top_level=False):
-    signatures = []
-    names = set()
+def collect_functions(declarations: Iterable[P.DeclContext], context: Context,
+                      top_level: bool = False) -> list[tuple[P.DeclFunContext, FunType]]:
+    signatures: list[tuple[P.DeclFunContext, FunType]] = []
+    names: set[str] = set()
     for decl in declarations:
         if isinstance(decl, P.DeclExceptionTypeContext):
             if not top_level:
@@ -113,8 +134,9 @@ def collect_functions(declarations, context, top_level=False):
     return signatures
 
 
-def check_function(decl, signature, context):
+def check_function(decl: P.DeclFunContext, signature: FunType, context: Context) -> None:
     local = context.copy()
+    param: P.ParamDeclContext
     for param, type_ in zip(decl.paramDecls, signature.parameters):
         local[param.name.text] = type_
     try:
@@ -137,7 +159,7 @@ def check_program(program: P.ProgramContext) -> None:
         check_function(decl, signature, context)
 
 
-def unwrap(node):
+def unwrap(node: P.ExprContext) -> P.ExprContext:
     while isinstance(node, P.ParenthesisedExprContext) or (
         isinstance(node, P.SequenceContext) and node.expr2 is None
     ):
@@ -145,7 +167,7 @@ def unwrap(node):
     return node
 
 
-def infer(node, context) -> Type:
+def infer(node: P.ExprContext, context: Context) -> Type:
     node = unwrap(node)
     if isinstance(node, P.VarContext):
         name = node.name.text
@@ -196,7 +218,8 @@ def infer(node, context) -> Type:
         return result
     if isinstance(node, P.AbstractionContext):
         local = context.copy()
-        parameters = []
+        parameters: list[Type] = []
+        param: P.ParamDeclContext
         for param in node.paramDecls:
             type_ = read_type(param.paramType)
             parameters.append(type_)
@@ -288,7 +311,7 @@ def infer(node, context) -> Type:
     raise UnsupportedFeature(f"Expression {type(node).__name__} is not supported")
 
 
-def check(node, expected: Type, context) -> None:
+def check(node: P.ExprContext, expected: Type, context: Context) -> None:
     node = unwrap(node)
     if isinstance(node, P.PanicContext):
         return
@@ -416,28 +439,29 @@ def check(node, expected: Type, context) -> None:
     require_equal(expected, infer(node, context), node)
 
 
-def reference_type(node, context):
+def reference_type(node: P.ExprContext, context: Context) -> RefType:
     type_ = infer(node, context)
     if not isinstance(type_, RefType):
         fail("ERROR_NOT_A_REFERENCE", f"Expected a reference, found {format_type(type_)}", node)
     return type_
 
 
-def exception_type(context, node):
+def exception_type(context: Context, node: ParserRuleContext) -> Type:
     if context.exception_type is None:
         fail("ERROR_EXCEPTION_TYPE_NOT_DECLARED", "Declare an exception type", node)
     return context.exception_type
 
 
-def catch_context(node, context):
+def catch_context(node: P.TryCatchContext, context: Context) -> Context:
     type_ = exception_type(context, node)
     local = context.copy()
     local.update(pattern_bindings(node.pat, type_, allow_literals=True))
     return local
 
 
-def record_bindings(node):
-    bindings = {}
+def record_bindings(node: P.RecordContext) -> dict[str, P.ExprContext]:
+    bindings: dict[str, P.ExprContext] = {}
+    binding: P.BindingContext
     for binding in node.bindings:
         name = binding.name.text
         if name in bindings:
@@ -446,8 +470,9 @@ def record_bindings(node):
     return bindings
 
 
-def let_context(node, context):
+def let_context(node: P.LetContext, context: Context) -> Context:
     local = context.copy()
+    binding: P.PatternBindingContext
     for binding in node.patternBindings:
         type_ = infer(binding.rhs, local)
         if not isinstance(binding.pat, P.PatternVarContext):
@@ -456,13 +481,14 @@ def let_context(node, context):
     return local
 
 
-def unwrap_pattern(pattern):
+def unwrap_pattern(pattern: P.PatternContext) -> P.PatternContext:
     while isinstance(pattern, P.ParenthesisedPatternContext):
         pattern = pattern.pattern_
     return pattern
 
 
-def pattern_bindings(pattern, type_, allow_literals=False):
+def pattern_bindings(pattern: P.PatternContext, type_: Type,
+                     allow_literals: bool = False) -> dict[str, Type]:
     pattern = unwrap_pattern(pattern)
     if isinstance(pattern, P.PatternVarContext):
         return {pattern.name.text: type_}
@@ -475,10 +501,9 @@ def pattern_bindings(pattern, type_, allow_literals=False):
             return {}
         if isinstance(pattern, P.PatternSuccContext) and type_ == NAT:
             return pattern_bindings(pattern.pattern_, NAT, allow_literals=True)
-    if isinstance(pattern, (P.PatternInlContext, P.PatternInrContext)):
-        if isinstance(type_, SumType):
-            payload = type_.left if isinstance(pattern, P.PatternInlContext) else type_.right
-            return pattern_bindings(pattern.pattern_, payload, allow_literals)
+    if isinstance(pattern, (P.PatternInlContext, P.PatternInrContext)) and isinstance(type_, SumType):
+        payload = type_.left if isinstance(pattern, P.PatternInlContext) else type_.right
+        return pattern_bindings(pattern.pattern_, payload, allow_literals)
     if isinstance(pattern, P.PatternVariantContext) and isinstance(type_, VariantType):
         name = pattern.label.text
         if name in type_.fields and pattern.pattern_ is not None:
@@ -487,7 +512,7 @@ def pattern_bindings(pattern, type_, allow_literals=False):
          f"Pattern does not match type {format_type(type_)}", pattern)
 
 
-def exhaustive(patterns, type_):
+def exhaustive(patterns: Iterable[P.PatternContext], type_: Type) -> bool:
     patterns = [unwrap_pattern(p) for p in patterns]
     if any(isinstance(p, P.PatternVarContext) for p in patterns):
         return True
@@ -505,11 +530,12 @@ def exhaustive(patterns, type_):
     return False
 
 
-def match_type(node, context, expected=None):
+def match_type(node: P.MatchContext, context: Context, expected: Type | None = None) -> Type:
     if not node.cases:
         fail("ERROR_ILLEGAL_EMPTY_MATCHING", "A match must contain at least one branch", node)
     scrutinized = infer(node.expr(), context)
     result = expected
+    case: P.MatchCaseContext
     for case in node.cases:
         local = context.copy()
         local.update(pattern_bindings(case.pattern_, scrutinized))
@@ -520,4 +546,4 @@ def match_type(node, context, expected=None):
     if not exhaustive([case.pattern_ for case in node.cases], scrutinized):
         fail("ERROR_NONEXHAUSTIVE_MATCH_PATTERNS",
              f"Patterns do not cover all cases of {format_type(scrutinized)}", node)
-    return result
+    return cast(Type, result)
