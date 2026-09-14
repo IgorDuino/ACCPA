@@ -4,15 +4,15 @@ import sys
 
 from .checker import check_program
 from .errors import TypeCheckError, UnsupportedFeature
-from .syntax.generated.stellaParser import stellaParser
 from .syntax.parsing import ParseError, parse_program
+from .syntax.tree import format_tree
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Stella type checker")
     parser.add_argument("file", nargs="?", default="-")
     mode = parser.add_mutually_exclusive_group()
-    mode.add_argument("--tree", action="store_true", help="print ANTLR  syntax tree")
+    mode.add_argument("--tree", action="store_true", help="print indented syntax tree with source positions")
     args = parser.parse_args(argv)
 
     try:
@@ -28,7 +28,7 @@ def main(argv=None) -> int:
         return 2
 
     if args.tree:
-        print(program.toStringTree(ruleNames=stellaParser.ruleNames))
+        print(format_tree(program))
         return 0
 
     try:

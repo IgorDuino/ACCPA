@@ -1,0 +1,10 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_NOT_A_GENERIC_FUNCTION]
+expected a universal type but got
+  fn (Nat) -> forall Y . fn (Y) -> Nat
+for the expression
+  const
+in the type application
+  const [Nat]
+

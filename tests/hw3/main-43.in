@@ -1,0 +1,15 @@
+// ERROR_AMBIGUOUS_TYPE
+language core;
+
+extend with #type-reconstruction, #sum-types, #unit-type;
+
+fn use(x : auto) -> Nat {
+  return match x {
+    inl(n) => n
+    | inr(_) => 0
+  }
+}
+
+fn main(n : Nat) -> Nat {
+  return use(n)
+}

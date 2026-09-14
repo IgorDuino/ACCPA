@@ -1,0 +1,6 @@
+language core;
+extend with #panic, #pairs;
+
+fn main(n : Nat) -> Nat {
+  return (panic!).1
+}

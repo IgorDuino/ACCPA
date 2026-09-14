@@ -10,15 +10,19 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "tests" / "hw1"
 
 
-def dataset_paths(group):
-    paths = DATA.glob("*.in" if group == "all" else f"{group}-*.in")
+def dataset_paths(group, data=DATA):
+    paths = data.glob("*.in" if group == "all" else f"{group}-*.in")
     return sorted(paths, key=lambda p: (p.stem.split("-")[0], int(p.stem.split("-")[1])))
 
 
 def check_case(path):
     expected = path.with_suffix(".out").read_text().split()
-    result = subprocess.run([sys.executable, str(ROOT / "main.py"), str(path)],
-                            capture_output=True, text=True, timeout=10)
+    try:
+        result = subprocess.run([sys.executable, str(ROOT / "main.py"), str(path)],
+                                capture_output=True, text=True, timeout=10)
+    except subprocess.TimeoutExpired:
+        return {"name": path.stem, "expected": expected, "exit_code": None,
+                "codes": [], "passed": False, "stderr": "TIMEOUT (10s)"}
     codes = re.findall(r"ERROR_[A-Z_]+", result.stderr)
     if expected:
         passed = result.returncode == 1 and len(codes) == 1 and codes[0] in expected

@@ -1,0 +1,9 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_NONEXHAUSTIVE_MATCH_PATTERNS]
+non-exhaustive pattern matches
+when matching on expression
+  n
+at least the following patterns are not matched:
+  inr (__something__)
+

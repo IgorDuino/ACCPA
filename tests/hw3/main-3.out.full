@@ -1,0 +1,22 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_NOT_A_FUNCTION]
+expected a function type but got
+  
+{
+  Nat, Bool
+}
+
+for the expression
+  
+{
+  0, false
+}
+
+in the function call
+  
+{
+  0, false
+}
+(0)
+

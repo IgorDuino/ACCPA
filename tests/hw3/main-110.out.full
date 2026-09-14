@@ -1,0 +1,24 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_UNEXPECTED_RECORD_FIELDS]
+unexpected fields
+  a, b, c
+for an expected record type
+  
+{
+  x : ?T4, y : ?T5, z : ?T6
+}
+
+in the actual type
+  
+{
+  a : ?T3, b : ?T2, c : ?T1
+}
+
+when typechecking the expression
+  
+{
+  a = p . z, b = p . y, c = p . x
+}
+
+

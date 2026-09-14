@@ -1,0 +1,6 @@
+language core;
+extend with #references, #pairs;
+
+fn main(n : Nat) -> {Nat, Nat} {
+  return {new(0), 0}
+}

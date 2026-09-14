@@ -1,0 +1,6 @@
+ERROR: Syntax error:
+ERROR:
+Unsupported Syntax Error: ERROR_DUPLICATE_TYPE_PARAMETER
+Duplicate type parameter(s) in generic function 'bad': X
+
+

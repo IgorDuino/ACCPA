@@ -1,0 +1,6 @@
+language core;
+extend with #structural-subtyping, #type-cast, #top-type;
+
+fn main(n : Nat) -> Nat {
+  return (n cast as Top)
+}

@@ -1,0 +1,23 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+when unifying expected type
+  fn (Nat) -> Nat
+against actual type
+  Bool
+when typechecking the expression
+  true
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_NOT_A_FUNCTION]
+expected a one-argument function type but got
+  Bool
+for the expression
+  true
+in the expression
+  fix (true)
+

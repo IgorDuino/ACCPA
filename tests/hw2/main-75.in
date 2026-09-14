@@ -1,0 +1,7 @@
+language core;
+extend with #references;
+
+fn main(n : Nat) -> Nat {
+  return (if true then new(succ(0)) else new(succ(succ(0))))
+}
+

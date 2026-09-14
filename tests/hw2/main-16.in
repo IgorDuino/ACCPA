@@ -1,0 +1,10 @@
+language core;
+extend with #panic;
+
+fn foo(b : Bool) -> Nat {
+  return 0
+}
+
+fn main(n : Nat) -> Nat {
+  return foo(if false then panic! else true)
+}

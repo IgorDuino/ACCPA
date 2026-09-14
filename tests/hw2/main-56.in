@@ -1,0 +1,6 @@
+language core;
+extend with #references;
+
+fn main(n : Nat) -> Nat {
+  return if <0xABCDEF> then 0 else succ(0)
+}

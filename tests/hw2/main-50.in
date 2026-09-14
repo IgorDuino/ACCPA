@@ -1,0 +1,6 @@
+language core;
+extend with #references, #lists;
+
+fn main(n : Nat) -> List[Nat] {
+  return List::cons(new(0), List::nil)
+}

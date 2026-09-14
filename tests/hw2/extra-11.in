@@ -1,0 +1,9 @@
+language core;
+extend with #exceptions, #open-variant-exceptions, #variants, #nested-function-declarations;
+
+fn main(n : Nat) -> Nat {
+  fn id(x : Nat) -> Nat { return x }
+  exception variant local_err : Nat
+  return id(0)
+}
+

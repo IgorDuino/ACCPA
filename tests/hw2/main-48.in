@@ -1,0 +1,8 @@
+language core;
+extend with #references;
+
+fn idNat(x : Nat) -> Nat { return x }
+
+fn main(n : Nat) -> Nat {
+  return idNat(new(0))
+}

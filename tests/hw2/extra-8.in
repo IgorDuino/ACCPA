@@ -1,0 +1,10 @@
+language core;
+extend with #exceptions, #open-variant-exceptions, #variants;
+
+exception variant dup : Nat
+exception variant dup : Nat
+
+fn main(n : Nat) -> Nat {
+  return 0
+}
+

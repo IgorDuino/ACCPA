@@ -1,0 +1,6 @@
+ERROR: Syntax error:
+ERROR:
+Unsupported Syntax Error: ERROR_CONFLICTING_EXCEPTION_DECLARATIONS
+Conflicting exception declarations at top-level: cannot mix 'exception type' and 'exception variant' declarations.
+
+

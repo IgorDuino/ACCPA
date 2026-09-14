@@ -1,0 +1,14 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  fn (X) -> X
+but got
+  forall Y . fn (Y) -> X
+when typechecking the expression
+  generic [Y] fn (y : Y)
+{
+  return x
+}
+
+

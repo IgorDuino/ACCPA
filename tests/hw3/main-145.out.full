@@ -1,0 +1,31 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_OCCURS_CHECK_INFINITE_TYPE]
+cannot construct an infinite type when type
+  ?T1
+is expected to unify with
+  ?T19 + (?T18 + (fn (?T1) -> ?T2))
+when typechecking the expression
+  inr (inr (fn (n : ?T5)
+{
+  return g (n)
+}
+))
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_OCCURS_CHECK_INFINITE_TYPE]
+cannot construct an infinite type when type
+  ?T7
+is expected to unify with
+  ?T18 + (fn (?T6 + ?T7) -> Nat)
+when typechecking the expression
+  inr (inr (fn (n : ?T5)
+{
+  return g (n)
+}
+))
+

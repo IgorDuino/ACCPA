@@ -1,0 +1,23 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+when unifying expected type
+  Unit
+against actual type
+  fn (Unit) -> Unit
+when typechecking the expression
+  seq (unit)
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_OCCURS_CHECK_INFINITE_TYPE]
+cannot construct an infinite type when type
+  ?T3
+is expected to unify with
+  fn (?T3) -> ?T3
+when typechecking the expression
+  seq (unit)
+

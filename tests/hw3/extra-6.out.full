@@ -1,0 +1,10 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_INCORRECT_NUMBER_OF_TYPE_ARGUMENTS]
+expected 2 type arguments
+for the expression
+  const as (forall X, Y . fn (X) -> fn (Y) -> X)
+but got 3 type arguments
+in the type application
+  const [Nat, Bool, Bool]
+

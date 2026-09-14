@@ -1,0 +1,6 @@
+ERROR: Syntax error:
+ERROR:
+Unsupported Syntax Error: ERROR_DUPLICATE_EXCEPTION_TYPE
+Duplicate exception type declaration(s) at top-level (only one is allowed).
+
+

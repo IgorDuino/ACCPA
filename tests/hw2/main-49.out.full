@@ -1,0 +1,41 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_REFERENCE]
+expected an expression of a non-reference type
+  Nat
+but got a new reference
+  0
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  Nat
+but got
+  & Nat
+when typechecking the expression
+  new (0)
+-----
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+expected type
+  
+{
+  Nat, Nat
+}
+
+but got
+  
+{
+  & Nat, Nat
+}
+
+when typechecking the expression
+  
+{
+  new (0), 0
+}
+
+

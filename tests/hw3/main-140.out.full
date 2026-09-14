@@ -1,0 +1,33 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_LAMBDA]
+expected an expression of a non-function type
+  ?T2
+but got an anonymous function
+  fn (m : ?T3)
+{
+  return Nat::rec (n, m, fn (i : ?T4)
+  {
+    return succ (i)
+  }
+  )
+}
+
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+when unifying expected type
+  fn (?T3) -> ?T3
+against actual type
+  Nat
+when typechecking the expression
+  fn (i : ?T4)
+{
+  return succ (i)
+}
+
+

@@ -1,0 +1,12 @@
+language core;
+extend with #universal-types;
+
+generic fn id[X](a : X) -> forall Y. fn(Y) -> Y {
+  return generic[X] fn(b : X) {
+    return b
+  }
+}
+
+fn main(a : Nat) -> Nat {
+  return a
+}

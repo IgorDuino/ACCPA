@@ -1,0 +1,11 @@
+language core;
+
+extend with #universal-types;
+
+generic fn bad[X, X](x : X) -> X {
+  return x
+}
+
+fn main(x : Nat) -> Nat {
+  return bad[Nat, Nat](x)
+}

@@ -1,0 +1,6 @@
+language core;
+extend with #ambiguous-type-as-bottom, #structural-subtyping, #sum-types;
+
+fn main(n : Nat) -> (Bool + Nat) {
+  return inr(0)
+}

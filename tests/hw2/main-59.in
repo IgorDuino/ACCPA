@@ -1,0 +1,6 @@
+language core;
+extend with #panic, #lists;
+
+fn main(n : Nat) -> Bool {
+  return List::isempty(panic!)
+}

@@ -1,0 +1,8 @@
+language core;
+extend with #references;
+
+fn takesBool(b : Bool) -> Nat { return if b then 0 else succ(0) }
+
+fn main(n : Nat) -> Nat {
+  return takesBool(<0xABCDEF>)
+}

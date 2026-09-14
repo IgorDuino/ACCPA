@@ -1,0 +1,10 @@
+language core;
+extend with #exceptions, #exception-type-declaration, #open-variant-exceptions, #variants;
+
+exception type = Nat
+exception variant e : Nat
+
+fn main(n : Nat) -> Nat {
+  return 0
+}
+

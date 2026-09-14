@@ -1,0 +1,7 @@
+language core;
+extend with #references, #tuples;
+
+fn main(n : Nat) -> {Nat, Nat} {
+  return { new(0), new(succ(0)) }
+}
+

@@ -128,21 +128,16 @@ def check_function(decl, signature, context):
 
 
 def check_program(program: P.ProgramContext) -> None:
-    unsupported = {"#structural-subtyping", "#ambiguous-type-as-bottom",
-                   "#type-reconstruction", "#universal-types"}
-    for extension in program.extensions:
-        for name in extension.extensionNames:
-            if name.text in unsupported:
-                raise UnsupportedFeature(f"Extension {name.text} is not supported")
     context = Context()
+    # print('Context before collected functions', context)
     functions = collect_functions(program.decls, context, top_level=True)
+    # print('Context after collected functions', context)
     check_main(context, program)
     for decl, signature in functions:
         check_function(decl, signature, context)
 
 
 def unwrap(node):
-
     while isinstance(node, P.ParenthesisedExprContext) or (
         isinstance(node, P.SequenceContext) and node.expr2 is None
     ):
@@ -216,6 +211,8 @@ def infer(node, context) -> Type:
             fail("ERROR_INCORRECT_NUMBER_OF_ARGUMENTS",
                  f"Expected {len(function.parameters)} arguments, found {len(node.args)}", node)
         for arg, expected in zip(node.args, function.parameters):
+            # function.parameters преобразованные типы
+            # node.args ноды до инфр типа
             check(arg, expected, context)
         return function.result
     if isinstance(node, P.NatRecContext):
@@ -226,8 +223,6 @@ def infer(node, context) -> Type:
     if isinstance(node, P.FixContext):
         operand = unwrap(node.expr_)
         if isinstance(operand, P.AbstractionContext) and len(operand.paramDecls) == 1:
-
-
             result = read_type(operand.paramDecls[0].paramType)
             check(operand, FunType((result,), result), context)
             return result
@@ -454,7 +449,6 @@ def record_bindings(node):
 def let_context(node, context):
     local = context.copy()
     for binding in node.patternBindings:
-
         type_ = infer(binding.rhs, local)
         if not isinstance(binding.pat, P.PatternVarContext):
             raise UnsupportedFeature("Structural let patterns are optional, not implemented")

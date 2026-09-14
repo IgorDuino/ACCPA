@@ -1,0 +1,11 @@
+language core;
+
+extend with #type-reconstruction;
+
+fn id(x : auto) -> auto {
+  return x
+}
+
+fn main(x : Nat) -> Nat {
+  return id(x)
+}

@@ -1,0 +1,9 @@
+language core;
+
+extend with #sum-types, #type-reconstruction;
+
+fn main(n : Nat + Bool) -> auto {
+  return match n {
+    	inl(a) => a
+   }
+}

@@ -1,0 +1,5 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_UNDEFINED_TYPE_VARIABLE]
+undefined type variable Y
+

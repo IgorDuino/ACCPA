@@ -1,0 +1,5 @@
+language core;
+
+fn main(n : Bool) -> Nat {
+  return if n then true else 0
+}

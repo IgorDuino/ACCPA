@@ -1,0 +1,18 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNDEFINED_VARIABLE]
+undefined variable unk
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+when unifying expected type
+  Bool
+against actual type
+  Nat
+when typechecking the expression
+  n
+

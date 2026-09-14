@@ -1,0 +1,10 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+Type Error Tag: [ERROR_UNEXPECTED_TYPE_FOR_EXPRESSION]
+when unifying expected type
+  Bool
+against actual type
+  [?T1]
+when typechecking the expression
+  List::tail (list)
+

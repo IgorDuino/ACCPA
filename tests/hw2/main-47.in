@@ -1,0 +1,6 @@
+language core;
+extend with #references, #let-bindings;
+
+fn main(n : Nat) -> Nat {
+  return let x = new(0) in x
+}

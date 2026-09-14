@@ -1,0 +1,233 @@
+ERROR: Syntax error:
+An error occurred during typechecking!
+===================
+Primary type error:
+===================
+Type Error Tag: [ERROR_UNEXPECTED_FIELD_ACCESS]
+unexpected access to field z
+in a record of type
+  
+{
+  x :
+  {
+    x :
+    {
+      x :
+      {
+        x : Nat, y : Nat
+      }
+      , a :
+      {
+        x : Nat, y : Nat, z : Bool
+      }
+    }
+    , y :
+    {
+      x :
+      {
+        x : Nat, y : Nat
+      }
+      , y :
+      {
+        x : Bool, y : Nat
+      }
+    }
+  }
+  , y :
+  {
+    a :
+    {
+      x :
+      {
+        x : Nat, y : Nat
+      }
+      , y :
+      {
+        x : Nat, y : Nat
+      }
+    }
+    , y :
+    {
+      x :
+      {
+        a : Nat, y : Nat
+      }
+      , y :
+      {
+        x : Bool, y : Nat
+      }
+    }
+  }
+}
+
+in the expression
+  
+{
+  x =
+  {
+    x =
+    {
+      x =
+      {
+        x = 0, y = 0
+      }
+      , a =
+      {
+        x = 0, y = 0, z = true
+      }
+    }
+    , y =
+    {
+      x =
+      {
+        x = 0, y = 0
+      }
+      , y =
+      {
+        x = false, y = 0
+      }
+    }
+  }
+  , y =
+  {
+    a =
+    {
+      x =
+      {
+        x = 0, y = 0
+      }
+      , y =
+      {
+        x = 0, y = 0
+      }
+    }
+    , y =
+    {
+      x =
+      {
+        a = 0, y = 0
+      }
+      , y =
+      {
+        x = false, y = 0
+      }
+    }
+  }
+}
+
+========================
+Alternative type errors:
+========================
+Type Error Tag: [ERROR_MISSING_RECORD_FIELDS]
+unexpected access to field z
+in a record of type
+  
+{
+  x :
+  {
+    x :
+    {
+      x :
+      {
+        x : Nat, y : Nat
+      }
+      , a :
+      {
+        x : Nat, y : Nat, z : Bool
+      }
+    }
+    , y :
+    {
+      x :
+      {
+        x : Nat, y : Nat
+      }
+      , y :
+      {
+        x : Bool, y : Nat
+      }
+    }
+  }
+  , y :
+  {
+    a :
+    {
+      x :
+      {
+        x : Nat, y : Nat
+      }
+      , y :
+      {
+        x : Nat, y : Nat
+      }
+    }
+    , y :
+    {
+      x :
+      {
+        a : Nat, y : Nat
+      }
+      , y :
+      {
+        x : Bool, y : Nat
+      }
+    }
+  }
+}
+
+in the expression
+  
+{
+  x =
+  {
+    x =
+    {
+      x =
+      {
+        x = 0, y = 0
+      }
+      , a =
+      {
+        x = 0, y = 0, z = true
+      }
+    }
+    , y =
+    {
+      x =
+      {
+        x = 0, y = 0
+      }
+      , y =
+      {
+        x = false, y = 0
+      }
+    }
+  }
+  , y =
+  {
+    a =
+    {
+      x =
+      {
+        x = 0, y = 0
+      }
+      , y =
+      {
+        x = 0, y = 0
+      }
+    }
+    , y =
+    {
+      x =
+      {
+        a = 0, y = 0
+      }
+      , y =
+      {
+        x = false, y = 0
+      }
+    }
+  }
+}
+
+
